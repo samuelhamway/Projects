@@ -1,0 +1,82 @@
+---
+title: "Social Science Research Results Reproduction"
+author: "Samuel Hamway"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(jtools)
+library(huxtable)
+library(ivreg)
+library(modelsummary)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+### **Reproduction of Table 4 in *Poverty and Witch Killing* by Ted Miguel**:
+
+```{r first dataset}
+df1 <- haven::read_dta("events_data.dta")
+
+col1  <- lm(witch_murders ~ any_rain +factor(vid2), weights=kaya, df1)
+
+col2 <- lm(witch_murders ~ any_rain +y_vill	+ educat	+cashcrop	+kaya	+hh_sukuma	+norelig	+wmgrp + factor(Idiv2) + factor(Idiv3), weights=kaya, df1)
+
+col3 <- lm(witch_murders ~ any_rain	+ post_rain	+ rain_2yr	+ factor(vid2), weights=kaya, df1)
+
+col4 <- lm(witch_murders ~ any_rain	+ any_disease	+ factor(vid2), weights=kaya, df1)
+
+col5 <- lm(witch_murders ~ any_rain	+ factor(vid2) + factor(year), weights=kaya, df1)
+
+dd <- export_summs( col1,col2,col3,col4,col5, robust = "HC1", cluster="vid2", digits = 3,
+                    
+model.names = c("OLS\n(1)", "OLS\n(2)","OLS\n(3)","OLS\n(4)","OLS\n(5)" ),
+
+omit_coefs='(Intercept)',
+             
+             statistics = c('Observations' = 'nobs', 'R squared' = 'r.squared', 'F statistic' = 'statistic', 'P value' = 'p.value'),
+
+coefs = c("Extreme rainfall (drought or flood)" = "any_rain", "Extreme rainfall, previous year" = "post_rain", "Extreme rainfall, current year and previous year" ="rain_2yr", "Human disease epidemic"="any_disease"),
+
+stars = c('***' = 0.01, '**' = 0.05, '*' = 0.1)
+
+  )
+
+controls <- matrix(c("Village fixed effects (67 villages)", "Yes","No","Yes","Yes","Yes" ,
+         "Socio-economic controls, and geographic division fixed effects", "No", "Yes", "No", "No", "No",
+         "Year fixed effects (11 years)", "No", "No", "No", "No", "Yes")
+       ,byrow = TRUE,3,6)
+dd <- add_rows(dd, controls , after=9, copy_cell_props = FALSE)
+
+dd
+```
+
+**Ted Miguel's Strategy:**
+
+Ted Miguel is using village fixed effects due to the fact that there may be some systematic differences between villages, such as rain, technology, or beliefs. These characteristics represent variables that are within the error term and are correlated with rain as well as a determinant in witch killing. By controlling for village fixed effects, rain is as good as random, thus eliminating bias by creating a randomized control experiment. Villages are constant and rain is randomly assigned. Miguel uses mechanisms to reinforce the idea that the effect on witch killings is due to income more so than any other dimension. He does this, for instance, by controlling for the effect of human epidemics and providing evidence that this is not a significant impact. In disproving other factors, we can say we are very confident (though not 100%) that income is the cause of witch killings. 
+
+### **Reproduction of Table 4, Column 1 in The *Long-Term Effects of Africa’s Slave Trades* by Nathan Nunn:**
+
+```{r second dataset}
+
+df2 <- haven::read_dta("slave_trade_QJE.dta")
+
+first_stage  <- lm(ln_export_area ~ atlantic_distance_minimum	+ indian_distance_minimum	+ saharan_distance_minimum	+ red_sea_distance_minimum, df2)
+
+second_stage <- ivreg(ln_maddison_pcgdp2000 ~ ln_export_area | atlantic_distance_minimum	+ indian_distance_minimum	+ saharan_distance_minimum	+ red_sea_distance_minimum , data=df2)
+
+models <- list(
+  "OLS"     = first_stage,
+  "IV" = second_stage
+)
+
+msummary(models,output = 'huxtable')
+
+```
+**Nathan Nunn's Identification Strategy:**
+
+In using a simple OLS regression as he does in Table 3, Nunn’s estimate of the intensity of slave exports on today’s economic performance may be biased. Figure III shows the relationship between the natural log of the number of slaves exported in all four slave trades between 1400 and 1900 normalized by land area and the natural log of per capita GDP in 2000, however a simple OLS regression is limited as it will only look at the relationship between the mean of the dependent and independent variables. An omitted variable bias may occur if there is a correlation between the error term and the intensity of slave exports and if the OVB is a determinant of today’s economic performance. 
+
+A good instrumental variable strategy could solve this problem as its results can confirm the OLS estimates. Instrumental variables use instruments that are correlated with slave exports, but uncorrelated with other country characteristics. If the instruments are also uncorrelated with the measurement error in slave exports due to interior undersampling of slaves, the estimates yielded by IV will be consistent and unbiased, solving the problem of the simple OLS regression. 
+
+The two-stage least squares estimation relies on information about the independent variable, in this case the intensity of slave exports, that is provided by the instrument. This implies that 2SLS is only reliable if the instruments are valid. For an instrument to be valid, it must meet both the instrument relevance condition and the instrument exogeneity condition. In Table IV the 2SLS method does not satisfy the relevance condition because the F-stat is 4.545, which signifies that the instrument is weak because the F-stat is below 10.  
