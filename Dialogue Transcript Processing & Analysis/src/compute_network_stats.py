@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-@author: samh4
+Call script as follows: python compute_network_stats.py -i /path/to/<interaction_network.json> -o /path/to/<stats.json>
+
 """
 #%% IMPORTS
 
