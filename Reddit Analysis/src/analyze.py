@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-@author: samh4
+Call script as: python3 analyze.py -i <coded_file.tsv> [-o <output_file>]
 """
 
 #%% IMPORTS
