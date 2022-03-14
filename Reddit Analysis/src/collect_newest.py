@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-@author: samh4
+Call script as follows: python3 collect_newest.py -o <output_file> -s <subreddit>
 """
 
 import requests
