@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-@author: samh4
+Call script as follows: python3 extract_to_tsv.py -o <out_file> <json_file> <num_posts_to_output>
+
 """
 import csv
 import json     ## imports
