@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Dec 10 00:13:41 2021
+Call script as follows: python build_interaction_network.py -i /path/to/<script_input.csv> -o /path/to/<interaction_network.json>
 
-@author: samh4
 """
 
 #%% IMPORTS
