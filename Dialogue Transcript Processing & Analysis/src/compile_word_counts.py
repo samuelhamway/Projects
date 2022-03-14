@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-@author: samh4
+Call script as follows: python compile_word_counts.py -o <word_counts_json> -d <clean_dialog.csv file>
+
 """
 
 #%% IMPORTS
