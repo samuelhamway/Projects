@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Oct  1 15:35:11 2021
-
-@author: samh4
+Call script as: python3 dialog_analysis.py -o output.json clean_dialog.csv
 """
 
 #%% IMPORTS
