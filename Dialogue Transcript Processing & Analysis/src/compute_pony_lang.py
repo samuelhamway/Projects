@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-@author: samh4
+Call script as follows: python compute_pony_lang.py -c <pony_counts.json> -n <num_words>
 """
 
 #%% IMPORTS
